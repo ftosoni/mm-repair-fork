@@ -52,7 +52,7 @@ To compute the grammar compression of the reordered files go back to the main di
 ../matrepair -r --noconv -b3 -r somedir/covtype 581012 54
 ``` 
 
-the `--noconv` option skips the recomputation of the `.vc` files, so the grammar compression is applied to the reoderd files. Note that any previous grammar compressed `.vc.C`, `.vc.R`, etc. is overwritten. As an alternative to using `matrepair` one can compte the reordering for each test file and then use `mmtest.py` with option `-y`. 
+the `--noconv` option skips the recomputation of the `.vc` files, so the grammar compression is applied to the reordered files. Note that any previous grammar compressed `.vc.C`, `.vc.R`, etc. is overwritten. As an alternative to using `matrepair` one can compte the reordering for each test file and then use `mmtest.py` with option `-y`. 
 
 ---
 
@@ -121,7 +121,7 @@ In alternative, you may want to construct a pruned version of the CSM. Assuming 
 ```bash
 cd build && ./tsp_generator_pruned_global  <PATH_TO_COVTYPE>/covtype 581012 54 4
 ```
-The last argument (equal to `4`, in our example) is the pruning parameter *k*. Smaller values of *k* translate into higher degrees of pruning. High values of *k* correspond instead to denser CSM (i.e., containg more edges) and to time-coonsuming CSM constructions.
+The last argument (equal to `4`, in our example) is the pruning parameter *k*. Smaller values of *k* translate into higher degrees of pruning. High values of *k* correspond instead to denser CSM (i.e., containing more edges) and to time-consuming CSM constructions.
 
 The command in our example generates the two configuration files: `covtype.pruned_global_4.tsp` and `covtype.pruned_local_4.par`[^3].
 
