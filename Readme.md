@@ -66,11 +66,11 @@ od -An -t f8 z.dbl | head
 
 ## Input matrix format
 
-By default matrepair assumes the inut matrix is in textual `csv` format. This behaviour can be changed using the following command line options:
+By default matrepair assumes the input matrix is in textual `csv` format. This behavior can be changed using the following command line options:
 
-* `--bool`  the input matrix has only 0/1 entries. The matrix is represente by a text file in which each line contains a pair of row and column indices denoting the position of a nonzero elements. The pairs must be ordered in row-major order without duplicates
+* `--bool`  the input matrix has only 0/1 entries. The matrix is represented by a text file in which each line contains a pair of row and column indices denoting the position of a nonzero elements. The pairs must be ordered in row-major order without duplicates
 
-* `--sparse`  the input matrix is represente by a text file in which each line contains a triplet consisting of row and column indices, denoting the position of a nonzero, followed by the nonzero value. The triplets must be ordered in row-major order and without duplicates. 
+* `--sparse`  the input matrix is represented by a text file in which each line contains a triplet consisting of row and column indices, denoting the position of a nonzero, followed by the nonzero value. The triplets must be ordered in row-major order and without duplicates. 
 
 * `--f64` the input matrix is represented in dense format using one float64 per entry. The total file size  is $`8 \cdot rows \cdot columns`'$ bytes
 
@@ -191,11 +191,11 @@ For the column reordering algorithms, take a look at the `reordering` subfolder.
 
 ## Experimental: the DRV format
 
-The DRV (Dense Row Values) format is suitable for dense matrices since it treats 0 as any other matrix entry. Each matrix entry (including 0) is represented by an int32 id. This format will usully proved a better compression, but the matrix operations will have cost proportional to the size of the uncompressed matrix. At the moment matrix vector multiplication is not supported for the DRV format. To bulk test compression in the DRV format use `mmtest.py` with option `md`, for example:
+The DRV (Dense Row Values) format is suitable for dense matrices since it treats 0 as any other matrix entry. Each matrix entry (including 0) is represented by an int32 id. This format will usually provide a better compression, but the matrix operations will have cost proportional to the size of the uncompressed matrix. At the moment matrix vector multiplication is not supported for the DRV format. To bulk test compression in the DRV format use `mmtest.py` with option `md`, for example:
 ```bash 
 mmtest.py md -d /data
 ```
-The purpose of this format is to explore the maximum compression acheivable using Repair.
+The purpose of this format is to explore the maximum compression achievable using Repair.
 
 
 ---
@@ -210,7 +210,7 @@ Used by *matrepair*. Outputs the `.vc` and `.val` files.
 
 ### bin2csrv, bin2csrvf, bin2csrvi
 Tools to compute the CSRV representation of a matrix stored in binary form. 
-The three versions assume that the matrix entries are stored respectivley as float64 (double), float32, int32 and write such entries in the '[if]val' file in the same format. 
+The three versions assume that the matrix entries are stored respectively as float64 (double), float32, int32 and write such entries in the '[if]val' file in the same format. 
 Used by *matrepair*. Outputs the `.vc` and `.[if]val` files. 
 
 

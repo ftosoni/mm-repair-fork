@@ -41,6 +41,7 @@ def execute_command(command):
   return True
 
 def execute_command_verbose(cmd, exit_code, msg='Something went wrong: please contact the maintainers') :
+  print(":::executing command:", cmd)
   if execute_command(cmd):
     print('All done.')
   else:
