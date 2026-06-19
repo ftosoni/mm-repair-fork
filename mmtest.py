@@ -41,8 +41,9 @@ TmpFilename = "tmp_mmtest"
 zip1 = "gzip"
 zip1ext = ".gz"
 # zip2 = "xz --lzma2=dict=1GiB" works but requires more than 10GiB RAM ...
-zip2 = "xz --lzma2=dict=128MiB" # require approx 1.2GiB RAM
-zip2ext = ".xz"
+# zip2 = "xz --lzma2=dict=128MiB" # require approx 1.2GiB RAM
+zip2 = "zstd"
+zip2ext = ".zst"
 
 # check that the test files exist and sizes are defined
 def check_testfiles(args,sufxs):
@@ -77,7 +78,7 @@ def test_gzip(args,logfile):
            f" file     & rows &   dense size % &&     {zip1} % &&   {zip2} % &\\\\\n"]
   for f in Files:
     name= os.path.join(args.d,f)
-    exe_name = os.path.join(args.main_dir,"csvmat2bin.py")
+    exe_name = os.path.join(args.main_dir,"others/csvmat2bin.py")
 
     rows,cols = Sizes[f]
     tablerow = []  # row of the results table
