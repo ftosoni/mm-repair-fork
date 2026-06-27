@@ -44,4 +44,8 @@ extern relong NullFreq;
 
 int blog (int x); // bits to represent x
 
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
 #endif
