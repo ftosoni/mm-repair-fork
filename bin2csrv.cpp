@@ -345,7 +345,7 @@ int main (int argc, char **argv) {
   fprintf(stderr,"Block size: %d\n", block_size);
 
   // open input file and check number of rows/cols
-  FILE *f = fopen(argv[1],"r");
+  FILE *f = fopen(argv[1],"rb");
   if(f==NULL) quit("Cannot open infile");
   if(! ((vtype&BOOLEAN_INPUT)or(vtype&SPARSE_INPUT)) ) {// binary input: check file size 
     if(fseek(f,0,SEEK_END)!=0) quit("Cannot seek input file");
@@ -358,7 +358,7 @@ int main (int argc, char **argv) {
   strncpy(fname,argv[1],PATH_MAX-10);
   strncat(fname,vtype & DOUBLE_OUTPUT ? ".val" : valext,6);
   if(vtype & NO_COL_ID) strncat(fname,"d",2);
-  FILE *fval = fopen(fname,"w");
+  FILE *fval = fopen(fname,"wb");
   if(fval==NULL) quit("Cannot open values file for writing");
 
   // init counters
@@ -392,7 +392,7 @@ int main (int argc, char **argv) {
   for(int bn=0;bn<nblocks;bn++) {
     if(nblocks==1) snprintf(fname,PATH_MAX,"%s%s",argv[1],mext);
     else snprintf(fname,PATH_MAX,"%s.%d.%d%s",argv[1],nblocks,bn,mext);
-    FILE *fvc = fopen(fname,"w");
+    FILE *fvc = fopen(fname,"wb");
     if(fvc==NULL) quit("Cannot open a .vc/.dv file");
     while(true) {
       // process input matrix one row at a time

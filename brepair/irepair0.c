@@ -496,7 +496,7 @@ int main (int argc, char **argv)
     exit(1);
   }
      olen = len = s.st_size/sizeof(int);
-     Tf = fopen (argv[1],"r");
+     Tf = fopen (argv[1],"rb");
      if (Tf == NULL)
   { fprintf (stderr,"Error: cannot open file %s for reading\n",argv[1]);
     exit(1);
@@ -509,7 +509,7 @@ int main (int argc, char **argv)
      fclose(Tf);
      strcpy(fname,argv[1]);
      strcat(fname,".R");
-     Rf = fopen (fname,"w");
+     Rf = fopen (fname,"wb");
      if (Rf == NULL)
   { fprintf (stderr,"Error: cannot open file %s for writing\n",fname);
     exit(1);
@@ -531,7 +531,7 @@ int main (int argc, char **argv)
   }
      strcpy(fname,argv[1]);
      strcat(fname,".C");
-     Cf = fopen (fname,"w");
+     Cf = fopen (fname,"wb");
      if (Cf == NULL)
   { fprintf (stderr,"Error: cannot open file %s for writing\n",fname);
     exit(1);
