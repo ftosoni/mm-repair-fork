@@ -45,9 +45,7 @@ int xsem_destroy(sem_t *sem, int linea, const char *file);
 
 // write error message associated to code en similarly to perror
 void xperror(int en, const char *msg) {
-  char buf[Buflen];
-  
-  char *errmsg = strerror_r(en, buf, Buflen);
+  char *errmsg = strerror(en);
   if(msg!=NULL)
     fprintf(stderr,"%s: %s\n",msg, errmsg);
   else
@@ -58,6 +56,7 @@ void xperror(int en, const char *msg) {
 // ----- threads
 
 inline int set_core(pthread_t *thread, int tid, const int ncores) {
+#ifdef __linux__
     // Set thread affinity
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
@@ -68,6 +67,12 @@ inline int set_core(pthread_t *thread, int tid, const int ncores) {
         exit(1);
     }
     return rc;
+#else
+    (void)thread;
+    (void)tid;
+    (void)ncores;
+    return 0;
+#endif
 }
 
 int xpthread_create(pthread_t *thread, const pthread_attr_t *attr,
