@@ -1,5 +1,5 @@
 EXECS = irepair irepair0 idespair
-CFLAGS = -Wall -g -m64 -O3
+CFLAGS = -Wall -g -O3
 
 # these excutables are not used by BigRepair 
 #   idespair repair despair toint 
