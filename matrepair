@@ -55,7 +55,7 @@ def main():
   parser.add_argument('-c', help='decompress and check',action='store_true')
   parser.add_argument('-r', help='compression full report',action='store_true')
   parser.add_argument('-p', help='number of repair procs (def. 1)',type=int, default=1)
-  parser.add_argument('-m', help='force repair to use at most M MBs (def. 95%% of available RAM)',default=-1, type=int)
+  parser.add_argument('-m', help='force repair to use at most M MBs (def. 90%% of RAM, capped by the cgroup limit)',default=-1, type=int)
   parser.add_argument('-y', help='lazy rebuild makefile style',action='store_true')
   # parser.add_argument('-k', help='keep intermediate files',action='store_true')
   parser.add_argument('-v', help="verbose", action='store_true')
@@ -75,11 +75,19 @@ def main():
   if args.p>args.b:
     args.p = args.b # more processes than blocks makes no sense
     print("Setting number of parallel processes to", args.p)
-  # if no max RAM provided on command line uses 90% of total 
+  # if no max RAM provided on command line uses 90% of total,
+  # where total is capped by the cgroup memory limit (shared nodes, Slurm, containers)
   if(args.m<0):
+    limit = cgroup_memory_limit()
     if virtual_memory is not None:
         mem = virtual_memory().total
-        args.m = max(4000,int(0.90*mem/2**20)) # assume at least 4GB in case virtual_memory() misbehaves
+        if limit is not None and limit < mem:
+          print("Memory capped by cgroup limit:", limit//2**20, "MBs")
+          args.m = int(0.90*limit/2**20)
+        else:
+          args.m = max(4000,int(0.90*mem/2**20)) # assume at least 4GB in case virtual_memory() misbehaves
+    elif limit is not None:
+        args.m = int(0.90*limit/2**20)
     else:
         args.m = 4000
     args.m = args.m//args.p # if repair is done in parallel divide memory equally 
@@ -368,7 +376,40 @@ def bits(n):
   return b
 
 
-# check if the files source.ext0 source.ext1 have to be generated 
+# memory limit (in bytes) of the cgroup this process runs in, None if unlimited or unknown.
+# Checks cgroup v2 (memory.max) and v1 (memory.limit_in_bytes) from our own cgroup
+# up to the root, since the limit may be set on an ancestor (e.g. a Slurm job)
+def cgroup_memory_limit():
+  limits = []
+  try:
+    with open("/proc/self/cgroup") as f:
+      lines = f.read().splitlines()
+  except OSError:
+    return None
+  for line in lines:
+    parts = line.split(":",2)
+    if len(parts)!=3: continue
+    if parts[0]=="0" and parts[1]=="":             # cgroup v2
+      root, fname = "/sys/fs/cgroup", "memory.max"
+    elif "memory" in parts[1].split(","):          # cgroup v1
+      root, fname = "/sys/fs/cgroup/memory", "memory.limit_in_bytes"
+    else: continue
+    path = parts[2]
+    while True:
+      try:
+        with open(os.path.join(root + path, fname)) as f:
+          v = f.read().strip()
+        if v.isdigit(): limits.append(int(v))    # v2 uses "max" for no limit
+      except OSError:
+        pass
+      if path in ("/",""): break
+      path = os.path.dirname(path)
+  # v1 reports "no limit" as a huge number: discard anything >= 2^60
+  limits = [l for l in limits if 0<l<2**60]
+  return min(limits) if limits else None
+
+
+# check if the files source.ext0 source.ext1 have to be generated
 def need_rebuild(source,*exts):
   assert os.path.exists(source), "Missing source: " + source
   for ext in exts:
